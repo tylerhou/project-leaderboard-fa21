@@ -74,6 +74,21 @@
     <script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-database.js"></script>
     <script>
 
+  const firebaseConfig = {
+    apiKey: "AIzaSyB_NvYxDgL6EOtrPOKtQlKbVX6Hoiy-2xM",
+    authDomain: "cs170-fa21-project.firebaseapp.com",
+    databaseURL: "https://cs170-fa21-project-default-rtdb.firebaseio.com",
+    projectId: "cs170-fa21-project",
+    storageBucket: "cs170-fa21-project.appspot.com",
+    messagingSenderId: "448213818341",
+    appId: "1:448213818341:web:005ff3adc35a60ed84ad0c",
+    measurementId: "G-SG6V39KPZT"
+  };
+  
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+
     async function refresh(graphName) {
         document.getElementById("table").innerHTML = '<div class="loader"></div>';
         await generateLeaderboard(graphName, firebase)
