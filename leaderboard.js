@@ -1,7 +1,7 @@
 
 const sizes = ['small', 'medium', 'large'];
 const numInputsPerSize = [300, 300, 300];
-// const broken_files = ['large-135', 'medium-219', 'large-219', 'large-218', 'large-208', 'large-224', 'medium-225', 'large-235']
+const broken_files = ['small-184.in']
 
 let teamSet = new Set();
 
@@ -65,7 +65,7 @@ async function computeFullLeaderboard(firebase) {
       const size = sizes[i];
       for (let j = 1; j <= numInputsPerSize[i]; j++) {
         const graphName = `${size}-${j}`;
-        // if (broken_files.includes(graphName)) {continue;}
+        if (broken_files.includes(graphName)) {continue;}
         const leaderboard = leaderboards[graphName].sort((elem1, elem2) => elem2[1] - elem1[1]);
         const ranks = getRanks(leaderboard);
         for (let i = 0; i < leaderboard.length; i++) {
