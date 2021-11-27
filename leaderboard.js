@@ -1,7 +1,7 @@
 
 const sizes = ['small', 'medium', 'large'];
 const numInputsPerSize = [300, 300, 300];
-const broken_files = ['small-184.in']
+const broken_files = ['small-184']
 
 let teamSet = new Set();
 
