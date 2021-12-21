@@ -5,112 +5,126 @@ const broken_files = ['small-184']
 
 let teamSet = new Set();
 
-async function loadTeams(firebase) {
-  const teamSet = new Set();
-  await firebase.database().ref("leaderboard").orderByChild("leaderboard_name").once("value",
-  function(snapshot) {
-    snapshot.forEach(function (item) {
-      teamSet.add(item.val()["leaderboard_name"]);
-    });
-  });
+async function getFirebaseData() {
+  const response = await fetch('https://www.dl.dropboxusercontent.com/s/oa6salqc8qulum1/cs-170-fall-2021-project-default-rtdb-export.json?dl=1');
+  const data = await response.json();
+  return data;
 }
 
-async function loadAutocomplete(input, firebase) {
+async function loadTeams(firebaseData) {
+  const teamSet = new Set();
+  if (firebaseData == null) {
+    firebaseData = await getFirebaseData();
+  }
+  for (let key in firebaseData['leaderboard']) {
+    const item = firebaseData['leaderboard'][key];
+    teamSet.add(item["leaderboard_name"]);
+  }
+  return teamSet;
+}
+
+async function loadAutocomplete(input) {
   if (!teamSet.size) {
-    teams = await loadTeams(firebase);
+    teams = await loadTeams();
     console.warn("Teams not loaded, check pullLeaderboard functions.");
   }
   new Awesomplete(input, {list: Array.from(teamSet)});
 }
 
 function round(x) {
-    return Math.round((x + Number.EPSILON) * 10000) / 10000;
+  return Math.round((x + Number.EPSILON) * 10000) / 10000;
 }
 
-async function pullLeaderboard(graphName, firebase) {
-    const entries = [];
-    await firebase.database().ref("leaderboard").orderByChild("input").equalTo(graphName).once("value", function(snapshot) {
-      snapshot.forEach(function(item) {
-        const name = item.val()["leaderboard_name"];
-        const score = round(item.val()["score"]);
-        entries.push([name, score]);
-        teamSet.add(name);
-      });
-    });
-    return entries.sort((elem1, elem2) => elem2[1] - elem1[1]);
-}
+async function pullLeaderboard(graphName, firebaseData) {
+  if (firebaseData == null) {
+    firebaseData = await getFirebaseData();
+  }
 
-async function pullFullLeaderboard(firebase) {
-    const leaderboards = {};
-    await firebase.database().ref("leaderboard").orderByChild("input").once("value", function(snapshot) {
-      snapshot.forEach(function(item) {
-        const name = item.val()["leaderboard_name"];
-        const inputName = item.val()["input"];
-        const score = round(item.val()["score"]);
-        if (!leaderboards.hasOwnProperty(inputName)) {
-            leaderboards[inputName] = [];
-        }
-        leaderboards[inputName].push([name, score]);
-        teamSet.add(name);
-      });
-    });
-    return leaderboards;
-}
+  const entries = [];
 
-async function computeFullLeaderboard(firebase) {
-    const leaderboards = await pullFullLeaderboard(firebase);
-    const namesAndRanks = {};
-    let totalInputs = 0;
-    for (let i = 0; i < sizes.length; i++) {
-      const size = sizes[i];
-      for (let j = 1; j <= numInputsPerSize[i]; j++) {
-        const graphName = `${size}-${j}`;
-        if (broken_files.includes(graphName)) {continue;}
-        const leaderboard = leaderboards[graphName].sort((elem1, elem2) => elem2[1] - elem1[1]);
-        const ranks = getRanks(leaderboard);
-        for (let i = 0; i < leaderboard.length; i++) {
-          entry = leaderboard[i];
-          name = entry[0];
-          score = entry[1];
-
-          if (!namesAndRanks.hasOwnProperty(name)) {
-            namesAndRanks[name] = [];
-          }
-
-          namesAndRanks[name].push([graphName, ranks[i]]);
-        }
-        totalInputs++;
+  for (let key in firebaseData['leaderboard']) {
+      const entry = firebaseData['leaderboard'][key];
+      if (entry['input'] == graphName) {
+          entries.push([entry['leaderboard_name'], round(entry['score'])]);
       }
+  }
+  return entries.sort((elem1, elem2) => elem2[1] - elem1[1]);
+}
+
+async function pullFullLeaderboard(firebaseData) {
+  if (firebaseData == null) {
+    firebaseData = await getFirebaseData();
+  }
+
+  const leaderboards = {};
+
+  for (let key in firebaseData['leaderboard']) {
+    const entry = firebaseData['leaderboard'][key];
+    const name = entry['leaderboard_name'];
+    const score = round(entry['score']);
+    const inputName = entry['input'];
+    if (!leaderboards.hasOwnProperty(inputName)) {
+        leaderboards[inputName] = [];
     }
-    const finalEntries = [];
-    for (let name in namesAndRanks) {
-      const scores = namesAndRanks[name];
-      test = scores;
-      if (scores.length == totalInputs) {
-        const average = scores.reduce((a, b) => a + b[1], 0) / totalInputs;
-        finalEntries.push([name, round(average)]);
+    leaderboards[inputName].push([name, score]);
+  }
+  return leaderboards;
+}
+
+async function computeFullLeaderboard() {
+  const leaderboards = await pullFullLeaderboard();
+  const namesAndRanks = {};
+  let totalInputs = 0;
+  for (let i = 0; i < sizes.length; i++) {
+    const size = sizes[i];
+    for (let j = 1; j <= numInputsPerSize[i]; j++) {
+      const graphName = `${size}-${j}`;
+      if (broken_files.includes(graphName)) {continue;}
+      const leaderboard = leaderboards[graphName].sort((elem1, elem2) => elem2[1] - elem1[1]);
+      const ranks = getRanks(leaderboard);
+      for (let i = 0; i < leaderboard.length; i++) {
+        entry = leaderboard[i];
+        name = entry[0];
+        score = entry[1];
+
+        if (!namesAndRanks.hasOwnProperty(name)) {
+          namesAndRanks[name] = [];
+        }
+
+        namesAndRanks[name].push([graphName, ranks[i]]);
       }
+      totalInputs++;
     }
-    return [namesAndRanks, finalEntries.sort((elem1, elem2) => elem1[1] - elem2[1])];
+  }
+  const finalEntries = [];
+  for (let name in namesAndRanks) {
+    const scores = namesAndRanks[name];
+    test = scores;
+    if (scores.length == totalInputs) {
+      const average = scores.reduce((a, b) => a + b[1], 0) / totalInputs;
+      finalEntries.push([name, round(average)]);
+    }
+  }
+  return [namesAndRanks, finalEntries.sort((elem1, elem2) => elem1[1] - elem2[1])];
 }
 
 function getRanks(sortedEntries) {
-    let currentRank = 0;
-    let prevValue = -1;
+  let currentRank = 0;
+  let prevValue = -1;
 
-    const ranks = [];
+  const ranks = [];
 
-    for (let i = 0; i < sortedEntries.length; i++) {
-        const entry = sortedEntries[i];
+  for (let i = 0; i < sortedEntries.length; i++) {
+      const entry = sortedEntries[i];
 
-        if (entry[1] != prevValue) {
-          currentRank = i + 1;
-          prevValue = entry[1];
-        }
+      if (entry[1] != prevValue) {
+        currentRank = i + 1;
+        prevValue = entry[1];
+      }
 
-        ranks.push(currentRank);
-    }
-    return ranks;
+      ranks.push(currentRank);
+  }
+  return ranks;
 }
 
 function formatTable(sortedEntries, header, addRanks) {
@@ -166,63 +180,63 @@ function createTeamView(teamEntries, teamName) {
   );
 }
 
-async function generateRanksForTeam(teamName, firebase) {
-  fullLeaderboardResults = await computeFullLeaderboard(firebase);
+async function generateRanksForTeam(teamName) {
+  fullLeaderboardResults = await computeFullLeaderboard();
   namesAndRanks = fullLeaderboardResults[0];
   return namesAndRanks.hasOwnProperty(teamName) ? namesAndRanks[teamName] : null;
 }
 
-async function generateTeamView(teamName, firebase) {
-   const entries = await generateRanksForTeam(teamName, firebase);
-   document.getElementById("table").innerHTML = '';
-   if (entries == null) {
-     const div = document.createElement('h1');
-     div.innerHTML = 'Invalid team name';
-     div.className = 'invalid';
-     document.getElementById("table").appendChild(div);
-   } else {
-     createTeamView(entries, teamName);
-   }
+async function generateTeamView(teamName) {
+  const entries = await generateRanksForTeam(teamName);
+  document.getElementById("table").innerHTML = '';
+  if (entries == null) {
+    const div = document.createElement('h1');
+    div.innerHTML = 'Invalid team name';
+    div.className = 'invalid';
+    document.getElementById("table").appendChild(div);
+  } else {
+    createTeamView(entries, teamName);
+  }
 }
 
-async function generateLeaderboard(graphName, firebase) {
-    let entries = null;
-    let header = null;
-    let title = null;
-    if (graphName === null) {
-      fullLeaderboardResults = await computeFullLeaderboard(firebase);
-      entries = fullLeaderboardResults[1];
-      header = ["#", "Team Name", "Average Rank"];
+async function generateLeaderboard(graphName) {
+  let entries = null;
+  let header = null;
+  let title = null;
+  if (graphName === null) {
+    fullLeaderboardResults = await computeFullLeaderboard();
+    entries = fullLeaderboardResults[1];
+    header = ["#", "Team Name", "Average Rank"];
+    title = "";
+  } else {
+    entries = await pullLeaderboard(graphName);
+    if (entries.length > 0) {
+      header = ["#", "Team Name", "Score"];
+      title = `<code>${graphName}.in</code>`;
+    } else {
+      header = [];
       title = "";
-    } else {
-      entries = await pullLeaderboard(graphName, firebase);
-      if (entries.length > 0) {
-        header = ["#", "Team Name", "Score"];
-        title = `<code>${graphName}.in</code>`;
-      } else {
-        header = [];
-        title = "";
-      }
     }
-    document.getElementById("table").innerHTML = '';
-    if (entries.length == 0) {
-      const div = document.createElement('h1');
-      div.innerHTML = 'Invalid input name';
-      div.className = 'invalid';
-      document.getElementById("table").appendChild(div);
-    } else {
-      createLeaderboard(entries, header, title);
-    }
+  }
+  document.getElementById("table").innerHTML = '';
+  if (entries.length == 0) {
+    const div = document.createElement('h1');
+    div.innerHTML = 'Invalid input name';
+    div.className = 'invalid';
+    document.getElementById("table").appendChild(div);
+  } else {
+    createLeaderboard(entries, header, title);
+  }
 }
 
 function getQueryVariable(variable) {
-    var query = window.location.search.substring(1);
-    var vars = query.split('&');
-    for (var i = 0; i < vars.length; i++) {
-        var pair = vars[i].split('=');
-        if (decodeURIComponent(pair[0]) == variable) {
-            return decodeURIComponent(pair[1]);
-        }
-    }
-    return null;
+  var query = window.location.search.substring(1);
+  var vars = query.split('&');
+  for (var i = 0; i < vars.length; i++) {
+      var pair = vars[i].split('=');
+      if (decodeURIComponent(pair[0]) == variable) {
+          return decodeURIComponent(pair[1]);
+      }
+  }
+  return null;
 }
