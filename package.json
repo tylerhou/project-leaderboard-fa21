@@ -1,0 +1,34 @@
+{
+  "name": "project-leaderboard-sp22",
+  "version": "1.0.0",
+  "description": "",
+  "main": "webpack.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tylerhou/project-leaderboard-sp22.git"
+  },
+  "author": "tylerhou@google.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tylerhou/project-leaderboard-sp22/issues"
+  },
+  "homepage": "https://github.com/tylerhou/project-leaderboard-sp22#readme",
+  "devDependencies": {
+    "@types/react": "^18.0.6",
+    "@types/react-dom": "^18.0.2",
+    "@types/react-router-dom": "^5.3.3",
+    "prettier": "^2.6.2",
+    "react-router-dom": "^6.3.0",
+    "ts-loader": "^9.2.8",
+    "typescript": "^4.6.3",
+    "webpack": "^5.72.0",
+    "webpack-cli": "^4.9.2"
+  },
+  "dependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  }
+}

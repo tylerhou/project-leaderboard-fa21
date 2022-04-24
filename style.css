@@ -56,3 +56,7 @@ span.icon:before {
   font-family: 'Glyphicons Halflings';
   content: "\f015";
 }
+
+.team-link a {
+  color: inherit;
+}
