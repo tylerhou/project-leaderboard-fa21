@@ -79,10 +79,10 @@
         }
 
         if (num === "") {
-          window.location.hash = '#/' + size;
+          window.location.hash = '#/leaderboard/' + size;
           return;
         }
-        window.location.hash = '#/' + size + '/' + String(num).padStart(3, '0');
+        window.location.hash = '#/leaderboard/' + size + '/' + String(num).padStart(3, '0');
       }
 
       var button = document.getElementById("navigateInputLeaderboardButton");

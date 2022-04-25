@@ -37,14 +37,11 @@
   border: unset;
 }
 
-.team-link:hover {
-  text-decoration: underline;
-}
-.leaderboard-link:hover {
+.team-link:hover,.leaderboard-link:hover,.sortable:hover{
   text-decoration: underline;
 }
 
-.nav-title,.leaderboard-link,.team-link {
+.nav-title,.leaderboard-link,.team-link,.sortable {
   cursor: pointer;
 }
 
@@ -58,5 +55,9 @@ span.icon:before {
 }
 
 .team-link a {
+  color: inherit;
+}
+
+.leaderboard-link a {
   color: inherit;
 }

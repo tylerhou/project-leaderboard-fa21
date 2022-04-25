@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 import type { SubmissionWithRank } from "src/InputLeaderboard/Types";
 
@@ -9,10 +10,9 @@ function InputLeaderboardRow(props: InputLeaderboardRowProps) {
     <tr>
       <th>{props.rank}</th>
       <td>
-        <span>{props.teamName}</span>
-        {/* <span className="team-link"> */}
-        {/* <a href={`/team/${props.teamName}`}>{props.teamName}</a> */}
-        {/* </span> */}
+        <span className="team-link">
+          <Link to={`/team/${props.teamName}`}>{props.teamName}</Link>
+        </span>
       </td>
       <td>{props.penalty}</td>
     </tr>

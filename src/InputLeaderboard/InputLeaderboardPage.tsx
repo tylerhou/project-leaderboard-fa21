@@ -5,29 +5,28 @@ import type { Submission } from "src/InputLeaderboard/Types";
 
 import { InputLeaderboard } from "src/InputLeaderboard/InputLeaderboard";
 import { FetchInputLeaderboard } from "src/InputLeaderboard/FetchInputLeaderboard";
-import { Size } from "src/Types";
+import { Size, ParseSize, InputID, ParseInputID } from "src/Types";
 
 function InputLeaderboardPage(_: {}) {
   const [submissions, setSubmissions] = useState<Submission[] | null>(null);
 
   const { size: sizeStr, input: inputStr } = useParams();
   let size: Size | undefined = undefined;
-  let input: number | undefined = undefined;
+  let input: InputID | undefined = undefined;
 
   let notFound = false;
   if (sizeStr !== undefined) {
-    if (!Object.values(Size).includes(sizeStr as Size)) {
+    size = ParseSize(sizeStr);
+    if (size === undefined) {
       notFound = true;
     }
-    size = sizeStr as Size;
   }
 
   if (inputStr !== undefined) {
-    const re = /^\d\d\d$/;
-    if (!inputStr.match(re)) {
+    input = ParseInputID(inputStr);
+    if (input === undefined) {
       notFound = true;
     }
-    input = Number(inputStr);
   }
 
   useEffect(() => {

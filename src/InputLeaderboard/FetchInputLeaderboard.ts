@@ -1,4 +1,4 @@
-import type { Size } from "src/Types";
+import type { Size, InputID } from "src/Types";
 import type { Submission } from "src/InputLeaderboard/Types";
 
 declare interface FetchInputLeaderboardResponse {
@@ -10,7 +10,7 @@ declare interface FetchInputLeaderboardResponse {
 
 async function FetchInputLeaderboard(
   size?: Size,
-  input?: number
+  input?: InputID
 ): Promise<Submission[]> {
   const url: string[] = [];
   if (size != null) {

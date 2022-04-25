@@ -6,13 +6,7 @@ import type {
 } from "src/InputLeaderboard/Types";
 
 import { InputLeaderboardRow } from "src/InputLeaderboard/InputLeaderboardRow";
-import type { Size } from "src/Types";
-
-type InputLeaderboardProps = {
-  size: Size | undefined;
-  input: number | undefined;
-  submissions: Submission[];
-};
+import { Size, InputID, InputIDToString } from "src/Types";
 
 // TODO(tylerhou): Tests.
 function computeRanks(submissions: Submission[]): SubmissionWithRank[] {
@@ -48,7 +42,11 @@ function computeRanks(submissions: Submission[]): SubmissionWithRank[] {
   return results;
 }
 
-const NUM_CASE_DIGITS = 3;
+type InputLeaderboardProps = {
+  size: Size | undefined;
+  input: InputID | undefined;
+  submissions: Submission[];
+};
 
 function InputLeaderboard(props: InputLeaderboardProps) {
   const scoreType =
@@ -60,9 +58,7 @@ function InputLeaderboard(props: InputLeaderboardProps) {
       <h1 id="table-title" className="title pt-4">
         <code>
           {props.size ?? "*"}/
-          {props.input === undefined
-            ? "*"
-            : String(props.input).padStart(NUM_CASE_DIGITS, "0")}
+          {props.input === undefined ? "*" : InputIDToString(props.input)}
         </code>
       </h1>
       <br />
