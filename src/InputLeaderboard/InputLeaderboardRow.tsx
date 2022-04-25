@@ -11,7 +11,7 @@ function InputLeaderboardRow(props: InputLeaderboardRowProps) {
       <td>
         <span>{props.teamName}</span>
         {/* <span className="team-link"> */}
-          {/* <a href={`/team/${props.teamName}`}>{props.teamName}</a> */}
+        {/* <a href={`/team/${props.teamName}`}>{props.teamName}</a> */}
         {/* </span> */}
       </td>
       <td>{props.penalty}</td>

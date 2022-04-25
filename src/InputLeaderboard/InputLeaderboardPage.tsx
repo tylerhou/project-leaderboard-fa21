@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import type { Submission } from "src/InputLeaderboard/Types";
 
 import { InputLeaderboard } from "src/InputLeaderboard/InputLeaderboard";
-import { GetInputLeaderboard } from "src/api/GetInputLeaderboard";
+import { FetchInputLeaderboard } from "src/InputLeaderboard/FetchInputLeaderboard";
 import { Size } from "src/Types";
 
 function InputLeaderboardPage(_: {}) {
@@ -31,17 +31,17 @@ function InputLeaderboardPage(_: {}) {
   }
 
   useEffect(() => {
-    GetInputLeaderboard(size, input).then((r) => setSubmissions(r));
+    FetchInputLeaderboard(size, input).then((r) => setSubmissions(r));
   }, [size, input]);
 
   if (notFound) {
-      return (
-        <div className="container">
-          <br/>
-          <br/>
-          <h1>404 Not Found.</h1>
-        </div>
-      );
+    return (
+      <div className="container">
+        <br />
+        <br />
+        <h1>404 Not Found.</h1>
+      </div>
+    );
   }
 
   if (submissions === null) {

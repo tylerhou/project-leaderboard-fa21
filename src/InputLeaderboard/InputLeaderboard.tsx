@@ -51,6 +51,10 @@ function computeRanks(submissions: Submission[]): SubmissionWithRank[] {
 const NUM_CASE_DIGITS = 3;
 
 function InputLeaderboard(props: InputLeaderboardProps) {
+  const scoreType =
+    props.size === undefined || props.input === undefined
+      ? "Average Rank"
+      : "Penalty";
   return (
     <div className="container">
       <h1 id="table-title" className="title pt-4">
@@ -68,7 +72,7 @@ function InputLeaderboard(props: InputLeaderboardProps) {
             <tr>
               <th>#</th>
               <th>Team Name</th>
-              <th>Score</th>
+              <th>{scoreType}</th>
             </tr>
           </thead>
           <tbody>
