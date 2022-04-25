@@ -11,7 +11,7 @@ function InputLeaderboardRow(props: InputLeaderboardRowProps) {
       <th>{props.rank}</th>
       <td>
         <span className="team-link">
-          <Link to={`/team/${props.teamName}`}>{props.teamName}</Link>
+          <Link to={`/team/${encodeURIComponent(props.teamName)}`}>{props.teamName}</Link>
         </span>
       </td>
       <td>{props.penalty}</td>
