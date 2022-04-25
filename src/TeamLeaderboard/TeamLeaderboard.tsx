@@ -7,10 +7,7 @@ import { InputIDToString } from "src/Types";
 
 import { SortBy, sort } from "src/TeamLeaderboard/Sort";
 
-function reduceSortBys(
-  sortBys: SortBy[],
-  column: SortBy["column"]
-): SortBy[] {
+function reduceSortBys(sortBys: SortBy[], column: SortBy["column"]): SortBy[] {
   const nextSortBys: SortBy[] = [];
   let start: SortBy | undefined;
   for (const sortBy of sortBys) {
@@ -60,21 +57,24 @@ function TeamLeaderboard(props: TeamLeaderboardProps) {
         <table className="table">
           <thead>
             <tr>
-              <th className="sortable"
+              <th
+                className="sortable"
                 onClick={() =>
                   setSortBys((sortBys) => reduceSortBys(sortBys, "input"))
                 }
               >
                 Input{sortIndicator(sortBys, "input")}
               </th>
-              <th className="sortable"
+              <th
+                className="sortable"
                 onClick={() =>
                   setSortBys((sortBys) => reduceSortBys(sortBys, "rank"))
                 }
               >
                 Rank{sortIndicator(sortBys, "rank")}
               </th>
-              <th className="sortable"
+              <th
+                className="sortable"
                 onClick={() =>
                   setSortBys((sortBys) => reduceSortBys(sortBys, "penalty"))
                 }

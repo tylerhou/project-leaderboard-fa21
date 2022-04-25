@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import type {
   Submission,
@@ -7,6 +7,8 @@ import type {
 
 import { InputLeaderboardRow } from "src/InputLeaderboard/InputLeaderboardRow";
 import { Size, InputID, InputIDToString } from "src/Types";
+
+import { sort, SortBy } from "src/InputLeaderboard/Sort";
 
 // TODO(tylerhou): Tests.
 function computeRanks(submissions: Submission[]): SubmissionWithRank[] {
@@ -42,6 +44,34 @@ function computeRanks(submissions: Submission[]): SubmissionWithRank[] {
   return results;
 }
 
+// TODO(tylerhou): Reduce duplication with TeamLeaderboard.tsx.
+function reduceSortBys(sortBys: SortBy[], column: SortBy["column"]): SortBy[] {
+  const nextSortBys: SortBy[] = [];
+  let start: SortBy | undefined;
+  for (const sortBy of sortBys) {
+    if (sortBy.column === column) {
+      start = { column: column, asc: !sortBy.asc };
+    } else {
+      nextSortBys.push(sortBy);
+    }
+  }
+
+  if (start === undefined) {
+    start = { column: column, asc: true };
+  }
+  nextSortBys.unshift(start);
+  return nextSortBys;
+}
+
+function sortIndicator(sortBys: SortBy[], column: SortBy["column"]): string {
+  for (const sortBy of sortBys) {
+    if (sortBy.column == column) {
+      return sortBy.asc ? " ▲" : " ▼";
+    }
+  }
+  return "";
+}
+
 type InputLeaderboardProps = {
   size: Size | undefined;
   input: InputID | undefined;
@@ -53,6 +83,13 @@ function InputLeaderboard(props: InputLeaderboardProps) {
     props.size === undefined || props.input === undefined
       ? "Average Rank"
       : "Penalty";
+
+  const [sortBys, setSortBys] = useState<SortBy[]>([
+    { column: "rank", asc: true },
+  ]);
+
+  const withRanks = sort(computeRanks(props.submissions), sortBys);
+
   return (
     <div className="container">
       <h1 id="table-title" className="title pt-4">
@@ -66,13 +103,31 @@ function InputLeaderboard(props: InputLeaderboardProps) {
         <table className="table">
           <thead>
             <tr>
-              <th>#</th>
-              <th>Team Name</th>
-              <th>{scoreType}</th>
+              <th className="sortable"
+                onClick={() =>
+                  setSortBys((sortBys) => reduceSortBys(sortBys, "rank"))
+                }
+              >
+                #{sortIndicator(sortBys, "rank")}
+              </th>
+              <th className="sortable"
+                onClick={() =>
+                  setSortBys((sortBys) => reduceSortBys(sortBys, "name"))
+                }
+              >
+                Team Name{sortIndicator(sortBys, "name")}
+              </th>
+              <th className="sortable"
+                onClick={() =>
+                  setSortBys((sortBys) => reduceSortBys(sortBys, "penalty"))
+                }
+              >
+                {scoreType}{sortIndicator(sortBys, "penalty")}
+              </th>
             </tr>
           </thead>
           <tbody>
-            {computeRanks(props.submissions).map((s) => {
+            {withRanks.map((s) => {
               return (
                 <InputLeaderboardRow
                   teamName={s.teamName}
