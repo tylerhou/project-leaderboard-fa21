@@ -17,7 +17,7 @@ async function FetchTeamLeaderboard(
   teamName: string
 ): Promise<LeaderboardRank[]> {
   const result = await fetch(
-    `https://project.cs170.dev/team/${encodeURIComponent(teamName)}`
+    `https://project.cs170.dev/team/${encodeURIComponent(teamName)}/`
   );
   const parsed: FetchTeamLeaderboardResponse = await result.json();
 
