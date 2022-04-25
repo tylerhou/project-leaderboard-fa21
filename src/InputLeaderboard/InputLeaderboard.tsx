@@ -90,6 +90,58 @@ function InputLeaderboard(props: InputLeaderboardProps) {
 
   const withRanks = sort(computeRanks(props.submissions), sortBys);
 
+  const inner =
+    withRanks.length > 0 ? (
+      <table className="table">
+        <thead>
+          <tr>
+            <th
+              className="sortable"
+              tabIndex={0}
+              onClick={() =>
+                setSortBys((sortBys) => reduceSortBys(sortBys, "rank"))
+              }
+            >
+              #{sortIndicator(sortBys, "rank")}
+            </th>
+            <th
+              className="sortable"
+              tabIndex={0}
+              onClick={() =>
+                setSortBys((sortBys) => reduceSortBys(sortBys, "name"))
+              }
+            >
+              Team Name{sortIndicator(sortBys, "name")}
+            </th>
+            <th
+              className="sortable"
+              tabIndex={0}
+              onClick={() =>
+                setSortBys((sortBys) => reduceSortBys(sortBys, "penalty"))
+              }
+            >
+              {scoreType}
+              {sortIndicator(sortBys, "penalty")}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {withRanks.map((s) => {
+            return (
+              <InputLeaderboardRow
+                teamName={s.teamName}
+                penalty={s.penalty}
+                rank={s.rank}
+                key={s.teamName}
+              />
+            );
+          })}
+        </tbody>
+      </table>
+    ) : (
+      <h4>No data found.</h4>
+    );
+
   return (
     <div className="container">
       <h1 id="table-title" className="title pt-4">
@@ -100,45 +152,7 @@ function InputLeaderboard(props: InputLeaderboardProps) {
       </h1>
       <br />
       <div className="container" id="table">
-        <table className="table">
-          <thead>
-            <tr>
-              <th className="sortable"
-                onClick={() =>
-                  setSortBys((sortBys) => reduceSortBys(sortBys, "rank"))
-                }
-              >
-                #{sortIndicator(sortBys, "rank")}
-              </th>
-              <th className="sortable"
-                onClick={() =>
-                  setSortBys((sortBys) => reduceSortBys(sortBys, "name"))
-                }
-              >
-                Team Name{sortIndicator(sortBys, "name")}
-              </th>
-              <th className="sortable"
-                onClick={() =>
-                  setSortBys((sortBys) => reduceSortBys(sortBys, "penalty"))
-                }
-              >
-                {scoreType}{sortIndicator(sortBys, "penalty")}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {withRanks.map((s) => {
-              return (
-                <InputLeaderboardRow
-                  teamName={s.teamName}
-                  penalty={s.penalty}
-                  rank={s.rank}
-                  key={s.teamName}
-                />
-              );
-            })}
-          </tbody>
-        </table>
+        {inner}
       </div>
     </div>
   );

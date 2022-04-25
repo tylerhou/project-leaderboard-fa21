@@ -24,27 +24,28 @@
         <ul class="navbar-nav ml-auto">
         </ul>
         <a class="btn btn-outline-dark my-2 my-sm-0" href="#">Overall Rankings</a>&nbsp;&nbsp;&nbsp;
-        <form id="navigateInputLeaderboardForm" class="navbar-form form-inline my-2 my-lg-0 is-invalid" style="padding-right: 0.5em;">
+        <form id="navigateInputLeaderboardForm" class="navbar-form form-inline my-2 my-lg-0 is-invalid" style="padding-right: 0.5em;" onsubmit="event.preventDefault()">
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="size" id="smallRadio" value="small" required>
+            <input class="form-check-input" type="radio" id="smallRadio" name="size" value="small" required>
             <label class="form-check-label" for="smallRadio">S</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="size" id="mediumReadio" value="medium" required>
+            <input class="form-check-input" type="radio" id="mediumReadio" name="size" value="medium" required>
             <label class="form-check-label" for="mediumReadio">M</label>
           </div>
           <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="size" id="largeRadio" value="large" required>
+            <input class="form-check-input" type="radio" id="largeRadio" name="size" value="large" required>
             <label class="form-check-label" for="largeRadio">L</label>
           </div>
           <input class="form-control mr-sm-2" type="search" maxlength="3" id="num" placeholder="Input Number" aria-label="Input Number">
           <button type="button" class="btn btn-outline-success my-2 my-sm-0" id="navigateInputLeaderboardButton"><i class="fa fa-search"></i> Input</button>
         </form>
-        <!-- <form class="navbar-form form-inline my-2 my-lg-0"> -->
-        <!--   <input class="form-control mr-sm-2" type="search" name="team" placeholder="Team Name" aria-label="Team Name" id="autocomplete"> -->
-        <!--   <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><i class="fa fa-search"></i> Team -->
-        <!--   </button> -->
-        <!-- </form> -->
+
+        <form id="navigateTeamLeaderboardForm" class="navbar-form form-inline my-2 my-lg-0" onsubmit="event.preventDefault()">
+          <input class="form-control mr-sm-2" type="search" placeholder="Team Name" aria-label="Team Name" id="name">
+          <button class="btn btn-outline-success my-2 my-sm-0" id="navigateTeamLeaderboardButton" type="submit"><i class="fa fa-search"></i> Team
+          </button>
+        </form>
       </div>
     </nav>
 
@@ -53,7 +54,7 @@
 
     <script>
       var numInput = document.getElementById("num");
-      var form = document.getElementById("navigateInputLeaderboardForm");
+      var inputForm = document.getElementById("navigateInputLeaderboardForm");
 
       function navigateInputLeaderboard(e) {
         e.preventDefault()
@@ -63,7 +64,7 @@
         } else {
           numInput.setCustomValidity("");
         }
-        if (!form.reportValidity()) {
+        if (!inputForm.reportValidity()) {
           return;
         }
 
@@ -85,8 +86,31 @@
         window.location.hash = '#/leaderboard/' + size + '/' + String(num).padStart(3, '0');
       }
 
-      var button = document.getElementById("navigateInputLeaderboardButton");
-      button.onclick = navigateInputLeaderboard;
+      var inputButton = document.getElementById("navigateInputLeaderboardButton");
+      inputButton.onclick = navigateInputLeaderboard;
+      var numInput = document.getElementById("num");
+      numInput.onkeyup = function(e) {
+        if (e.keyCode === 13) {
+          navigateInputLeaderboard(e);
+        }
+      }
+
+      var teamInput = document.getElementById("team");
+      var teamForm = document.getElementById("navigateTeamLeaderboardForm");
+      function navigateTeamLeaderboard(e) {
+        e.preventDefault()
+        var team = teamInput.value.trim();
+        window.location.hash = '#/team/' + encodeURIComponent(team);
+      }
+
+      var teamButton = document.getElementById("navigateTeamLeaderboardButton");
+      teamButton.onclick = navigateTeamLeaderboard;
+      var teamInput = document.getElementById("name");
+      teamInput.onkeyup = function(e) {
+        if (e.keyCode === 13) {
+          navigateTeamLeaderboard(e);
+        }
+      }
     </script>
     <script src="dist/bundle.js"></script>
   </body>
