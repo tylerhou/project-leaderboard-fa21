@@ -131,6 +131,7 @@ function InputLeaderboard(props: InputLeaderboardProps) {
               <InputLeaderboardRow
                 teamName={s.teamName}
                 penalty={s.penalty}
+                penaltyStr={s.penaltyStr}
                 rank={s.rank}
                 key={s.teamName}
               />

@@ -5,6 +5,7 @@ declare interface FetchInputLeaderboardResponse {
   Entries: {
     TeamName: string;
     TeamScore: number;
+    TeamScoreStr: string;
   }[];
 }
 
@@ -30,6 +31,7 @@ async function FetchInputLeaderboard(
   return parsed.Entries.map((item) => ({
     teamName: item.TeamName,
     penalty: item.TeamScore,
+    penaltyStr: item.TeamScoreStr,
   }));
 }
 

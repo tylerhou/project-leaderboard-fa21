@@ -16,7 +16,7 @@ function sort(
         case "rank":
           diff = a.rank - b.rank;
           break;
-        case "rank":
+        case "name":
           diff = a.teamName.localeCompare(b.teamName);
           break;
         case "penalty":

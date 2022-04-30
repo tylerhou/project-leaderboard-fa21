@@ -14,7 +14,7 @@ function InputLeaderboardRow(props: InputLeaderboardRowProps) {
           <Link to={`/team/${encodeURIComponent(props.teamName)}`}>{props.teamName}</Link>
         </span>
       </td>
-      <td>{props.penalty}</td>
+      <td>{props.penaltyStr}</td>
     </tr>
   );
 }

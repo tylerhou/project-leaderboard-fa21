@@ -20,7 +20,7 @@ function TeamLeaderboardRow(props: TeamLeaderboardRowProps) {
         </span>
       </td>
       <td>{props.rank}</td>
-      <td>{props.penalty}</td>
+      <td>{props.penaltyStr}</td>
     </tr>
   );
 }

@@ -3,8 +3,8 @@ import type { LeaderboardRank } from "src/TeamLeaderboard/Types";
 
 declare interface FetchTeamLeaderboardResponse {
   Entries: {
-    TeamName: string;
     TeamScore: number;
+    TeamScoreStr: string;
     TeamRank: number;
     TestCase: {
       CaseType: string;
@@ -29,6 +29,7 @@ async function FetchTeamLeaderboard(
     return {
       rank: item.TeamRank,
       penalty: item.TeamScore,
+      penaltyStr: item.TeamScoreStr,
       size: size!,
       input: input!,
     };

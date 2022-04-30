@@ -84,6 +84,7 @@ function TeamLeaderboard(props: TeamLeaderboardProps) {
             return (
               <TeamLeaderboardRow
                 penalty={s.penalty}
+                penaltyStr={s.penaltyStr}
                 rank={s.rank}
                 size={s.size}
                 input={s.input}
